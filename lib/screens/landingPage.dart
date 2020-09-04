@@ -1,6 +1,9 @@
 
+import 'dart:async';
+
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
+import 'package:firebase_storage/firebase_storage.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/rendering.dart';
@@ -20,12 +23,8 @@ class LandingScreen extends StatefulWidget {
   _LandingScreenState createState() => _LandingScreenState();
 }
 class _LandingScreenState extends State<LandingScreen> {
-  final total = TextEditingController();
-  final name = TextEditingController();
-  final invoiceNumber = TextEditingController();
-  final issueDate = TextEditingController();
+  // double _height,_width;
   final searchController=TextEditingController();
-  double _height,_width;
   bool showSearchBar=false;
   Loader loader;
   Route get _createRoute {
@@ -45,14 +44,16 @@ class _LandingScreenState extends State<LandingScreen> {
 
   @override
   Widget build(BuildContext context) {
-    _height=MediaQuery.of(context).size.height;
-    _width=MediaQuery.of(context).size.width;
     loader = Loader(context);
     return Scaffold(
       resizeToAvoidBottomInset: false,
       floatingActionButtonLocation: FloatingActionButtonLocation.miniEndFloat,
       floatingActionButton: RaisedButton(onPressed: ()async{
          getReceiptDetails(context);
+        // loader.show();
+        // Timer(Duration(seconds:3), (){
+        //   loader.hide();
+        // });
       },
                   padding: EdgeInsets.all(18.0),
                   elevation: 5,
@@ -145,57 +146,82 @@ class _LandingScreenState extends State<LandingScreen> {
              itemCount: snapshot.data.documents.length,
              // ignore: missing_return
              itemBuilder: (context,index){
-                // 
+                print(snapshot.data.documents[index].data()['downloadUrl']);
                 if(snapshot.data.documents[index].data()['merchant_name'].toString().toLowerCase().contains(searchController.text.toLowerCase()) || searchController.text.isEmpty)
                 if(snapshot.data.documents[index].data()['uid']==FirebaseAuth.instance.currentUser.uid)
-                return Card(
-                  color: Colors.white,
-                          child: ListTile(
-                            onTap: (){
-                              Alert(context: context, title: '',content: Image.network(snapshot.data.documents[index].data()['downloadUrl']),buttons: [
-                                DialogButton(child: Text('CLOSE',style: TextStyle(
-                                 fontSize: getFontSize(context,0),
-                                 color: Colors.white
-                                //  fontFamily: 'receiptFont',
-                                ),), onPressed: (){
-                                  Navigator.of(context).pop();
-                                })
-                              ],style:AlertStyle(
-                                titleStyle: TextStyle(
-                             fontSize: 0.1
-                             
-                            ),
-                            isOverlayTapDismiss: false,
-                               isCloseButton: false 
-                              )).show();
-                            },
-                            contentPadding: EdgeInsets.all(5),
-                   leading:FadeInImage(
-                     placeholder: AssetImage(
-                      'assets/receipt_placeholder.png'
-                     ),
-                    image: NetworkImage(
-                      snapshot.data.documents[index].data()['downloadUrl'])
-                      ,fit: BoxFit.cover,
-                      width: MediaQuery.of(context).size.width*0.1,
-                     ),
-                   title: Text(snapshot.data.documents[index].data()['merchant_name'].toString(),textAlign: TextAlign.left,style: TextStyle(
-                                 fontSize: getFontSize(context,0),
-                                 fontWeight: FontWeight.w500
-                                //  fontFamily: 'receiptFont',
-                                ),),
+                return Dismissible(
+                  key:Key(snapshot.data.documents[index].documentID),
+                  onDismissed: (direction)async{
+                    loader.show();
+                    try{
+                    FirebaseFirestore.instance.doc('receipts/'+snapshot.data.documents[index].documentID).delete().then((value) => loader.hide());
+                    print('gs://receipt-management-bb942.appspot.com/'+snapshot.data.documents[index].data()['storagePath']);
+                    FirebaseStorage.instance.getReferenceFromUrl('gs://receipt-management-bb942.appspot.com/'+snapshot.data.documents[index].data()['storagePath']).then((value)async => await value.delete());
+                    } catch(e){
+                      print(e);
+                    loader.hide();
+                    }
+                  },
+                  background: Container(
+                   color: Colors.red,
+                   padding: EdgeInsets.all(10),
+                   alignment: Alignment.centerLeft,
+                   child: Icon(Icons.delete,size: 40,color: Colors.grey[200],), 
+                  ),
+                  secondaryBackground: Container(
+                   color: Colors.red,
+                   padding: EdgeInsets.all(10),
+                   alignment: Alignment.centerRight,
+                   child: Icon(Icons.delete,size: 40,color: Colors.grey[200],), 
+                  ),
+                                  child: Card(
+                    color: Colors.white,
+                            child: ListTile(
+                              onTap: (){
+                                Alert(context: context, title: '',content: Image.network(snapshot.data.documents[index].data()['downloadUrl']),buttons: [
+                                  DialogButton(child: Text('CLOSE',style: TextStyle(
+                                   fontSize: getFontSize(context,0),
+                                   color: Colors.white
+                                  //  fontFamily: 'receiptFont',
+                                  ),), onPressed: (){
+                                    Navigator.of(context).pop();
+                                  })
+                                ],style:AlertStyle(
+                                  titleStyle: TextStyle(
+                               fontSize: 0.1
+                              ),
+                              isOverlayTapDismiss: false,
+                                 isCloseButton: false 
+                                )).show();
+                              },
+                              contentPadding: EdgeInsets.all(5),
+                     leading:FadeInImage(
+                       placeholder: AssetImage(
+                        'assets/receipt_placeholder.png'
+                       ),
+                      image: NetworkImage(
+                        snapshot.data.documents[index].data()['downloadUrl'])
+                        ,fit: BoxFit.cover,
+                        width: MediaQuery.of(context).size.width*0.2,
+                       ),
+                     title: Text(snapshot.data.documents[index].data()['merchant_name'].toString(),textAlign: TextAlign.left,style: TextStyle(
+                                   fontSize: getFontSize(context,0),
+                                   fontWeight: FontWeight.w500
+                                  //  fontFamily: 'receiptFont',
+                                  ),),
+                                  
+                                  trailing: Text('₹'+snapshot.data.documents[index].data()['total'].toString().toUpperCase(),textAlign: TextAlign.left,style: TextStyle(
+                                   fontSize: getFontSize(context,0),
+                                  //  fontFamily: 'receiptFont',
+                                  ),),
+                                  subtitle:Text(DateFormat('dd MMM, yyyy').format(DateTime.parse(snapshot.data.documents[index].data()['date'])).toString().toUpperCase(),textAlign: TextAlign.left,style: TextStyle(
+                                   fontSize: getFontSize(context,-2),
+                                  //  fontFamily: 'receiptFont',
+                                  ),),
+                                  ), 
                                 
-                                trailing: Text('₹'+snapshot.data.documents[index].data()['total'].toString().toUpperCase(),textAlign: TextAlign.left,style: TextStyle(
-                                 fontSize: getFontSize(context,0),
-                                //  fontFamily: 'receiptFont',
-                                ),),
-                                subtitle:Text(DateFormat('dd MMM, yyyy').format(DateTime.parse(snapshot.data.documents[index].data()['date'])).toString().toUpperCase(),textAlign: TextAlign.left,style: TextStyle(
-                                 fontSize: getFontSize(context,-2),
-                                //  fontFamily: 'receiptFont',
-                                ),),
-                                ), 
-                              
-                  );
+                    ),
+                );
                   return Container();
               }
             ),

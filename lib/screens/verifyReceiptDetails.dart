@@ -26,7 +26,6 @@ class _VerifyDetailsScreenState extends State<VerifyDetailsScreen> {
   String merchantName;
   String total;
   String date;
-  // DateFormat.yMd('en_US').parse('1/10/2012');
   DateTime selectedDate = DateTime.now();
   Future<void> submitQuery() async {
     final pr = Loader(context);
@@ -48,7 +47,8 @@ class _VerifyDetailsScreenState extends State<VerifyDetailsScreen> {
           'total': total,
           'date': selectedDate.toString(),
           'uid': currentUserUID,
-          'downloadUrl': await snapshot.ref.getDownloadURL()
+          'downloadUrl': await snapshot.ref.getDownloadURL(),
+          'storagePath': await snapshot.ref.getPath()
         }).then((value) {
           pr.hide();
           Navigator.pop(context);

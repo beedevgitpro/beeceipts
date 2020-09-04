@@ -53,7 +53,6 @@ class _LoginScreenState extends State<LoginScreen> {
             Navigator.pushAndRemoveUntil(context, MaterialPageRoute(builder: (context)=>LandingScreen(user: _auth.user,name: doc.data()['name'].split(' ')[0],)),(r)=>false);
           }
         });
-        
     });
     }on FirebaseAuthException catch(e){
       loader.hide();

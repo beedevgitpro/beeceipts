@@ -14,12 +14,8 @@ void getReceiptDetails(BuildContext context) async{
     File croppedFile = await ImageCropper.cropImage(
       sourcePath: pickedFile.path,
       aspectRatioPresets: [
-        CropAspectRatioPreset.square,
-        CropAspectRatioPreset.square,
-        CropAspectRatioPreset.ratio3x2,
+       
         CropAspectRatioPreset.original,
-        CropAspectRatioPreset.ratio4x3,
-        CropAspectRatioPreset.ratio16x9
       ],
       androidUiSettings: AndroidUiSettings(
         activeControlsWidgetColor: Theme.of(context).accentColor,

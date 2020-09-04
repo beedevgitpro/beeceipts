@@ -11,11 +11,13 @@ class Loader{
       return WillPopScope(
         onWillPop: () async => false,
               child: AlertDialog(
+                shape: CircleBorder(),
           content: Container(
-            width: 100,
-            height: 100,
-                    child: SpinKitChasingDots(
-              size: 50,
+            width: 50,
+            height: 70,
+                    child: SpinKitRing(
+                      lineWidth: 10,
+              size: 60,
               color: Theme.of(context).accentColor,
             ),
           ),

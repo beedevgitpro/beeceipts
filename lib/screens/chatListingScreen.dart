@@ -9,17 +9,17 @@ class ChatListScreen extends StatefulWidget {
 }
 
 class _ChatListScreenState extends State<ChatListScreen> {
-  double _height,_width;
+  // double _height,_width;
   @override
   Widget build(BuildContext context) {
-    _height=MediaQuery.of(context).size.height;
-    _width=MediaQuery.of(context).size.width;
+    // _height=MediaQuery.of(context).size.height;
+    // _width=MediaQuery.of(context).size.width;
     return Scaffold(
       resizeToAvoidBottomInset: false,
       appBar: AppBar(
         title: Text('Chats',style: TextStyle(fontSize: getFontSize(context,4), fontWeight: FontWeight.w700),textAlign: TextAlign.center),
         actions: [
-          Icon(CupertinoIcons.create_solid,
+          Icon(Icons.edit,
                   color: Colors.white, size: 35),
         ],
       ),
