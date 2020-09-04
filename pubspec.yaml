@@ -1,0 +1,45 @@
+name: receipt_management
+description: A new Flutter project.
+
+publish_to: 'none'
+
+version: 1.0.0+1
+
+environment:
+  sdk: ">=2.7.0 <3.0.0"
+
+dependencies:
+  flutter:
+    sdk: flutter
+  cupertino_icons: ^0.1.3
+  shared_preferences:
+  dio: ^3.0.10
+  image_picker: ^0.6.7+4
+  image_cropper: ^1.3.1
+  flutter_spinkit: ^4.1.2+1
+  # fancy_bottom_navigation: ^0.3.2
+  firebase_auth: 0.18.0+1
+  cloud_firestore:
+  firebase_core:
+  firebase_storage: ^4.0.0
+  mask_text_input_formatter: ^1.1.0
+  firebase_ml_vision: ^0.9.6+2
+  rflutter_alert: ^1.0.3
+  date_field: ^0.3.0
+  http:
+  intl: ^0.16.1
+
+
+dev_dependencies:
+  flutter_test:
+    sdk: flutter
+flutter:
+  uses-material-design: true
+
+  assets:
+    # - assets/receipt.jpg
+    - assets/receipt_placeholder.png
+  fonts:
+    - family: receiptFont
+      fonts:
+        - asset: assets/fonts/VT323-Regular.ttf

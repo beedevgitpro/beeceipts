@@ -1,0 +1,40 @@
+{
+  "project_info": {
+    "project_number": "427961038472",
+    "firebase_url": "https://receipt-management-bb942.firebaseio.com",
+    "project_id": "receipt-management-bb942",
+    "storage_bucket": "receipt-management-bb942.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:427961038472:android:7ab3fa5f3012e23ba8d13d",
+        "android_client_info": {
+          "package_name": "com.beedev.receipt_management"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "427961038472-5dunuqb868ou082918drv2ie70u3aj6k.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyAxQo-ElTf5ZdCc1BFC6RPZweJGLMddVL0"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "427961038472-5dunuqb868ou082918drv2ie70u3aj6k.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
